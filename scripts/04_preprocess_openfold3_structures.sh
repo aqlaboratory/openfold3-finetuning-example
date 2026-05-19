@@ -3,14 +3,14 @@ set -euo pipefail
 
 source ~/.bashrc
 
-# Avoid conda CUDA activate hooks failing under nounset when this var is unset.
-: "${NVCC_PREPEND_FLAGS:=}"
-
 conda activate of3-internal
 
-REPO_ROOT="${REPO_ROOT:-/scratch/s5h/etowah.s5h/projects/openfold3-internal}"
-export PYTHONPATH="$REPO_ROOT${PYTHONPATH:+:$PYTHONPATH}"
-DATASET_ROOT="${DATASET_ROOT:-$REPO_ROOT/datasets/a71ev2a/small_test}"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+FINETUNE_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+OPENFOLD_REPO_ROOT="${OPENFOLD_REPO_ROOT:-${REPO_ROOT:-$FINETUNE_ROOT/../openfold3-internal}}"
+REPO_ROOT="$OPENFOLD_REPO_ROOT"
+export PYTHONPATH="$OPENFOLD_REPO_ROOT${PYTHONPATH:+:$PYTHONPATH}"
+DATASET_ROOT="${DATASET_ROOT:-$FINETUNE_ROOT/example/dataset}"
 MERGED_CIF_DIR="${MERGED_CIF_DIR:-$DATASET_ROOT/merged_cifs}"
 MONOMER_CIF_DIR="${MONOMER_CIF_DIR:-$DATASET_ROOT/merged_cifs_monomer}"
 CCD_CIF="${CCD_CIF:-$MERGED_CIF_DIR/reference_data/components_harmonized.cif}"

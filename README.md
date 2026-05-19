@@ -1,4 +1,23 @@
-# Pipeline V2: Finetuning Dataset Generation
+# Finetuning Dataset Generation
+
+## Setup
+
+Install this repo and OpenFold3 from source. This script relies on imports from the OpenFold3 repo. 
+```
+git clone git@github.com:etowahadams/openfold3-finetune.git
+# clone OF3
+git clone git@github.com:aqlaboratory/openfold-3.git
+cd openfold-3
+
+conda create -n of3-internal python=3.13 -y
+conda activate of3-internal
+
+pip install -e .
+
+setup_openfold
+```
+
+## Running the pipeline 
 
 This pipeline starts from Fragalysis-style sample directories containing PDB and
 SDF files, then produces OpenFold3-ready structure files, alignment arrays, a
@@ -6,26 +25,36 @@ weighted training dataset cache, and a full validation cache. It is
 intentionally split into small, inspectable steps so each output can be checked
 before moving on.
 
-`new_pipeline.md` may appear in an IDE tab, but it does not currently exist in
-this repo. This document is the source of truth for the simplified v2 workflow.
-
-All paths in this document assume the dataset lives here:
 
 ```bash
-DATASET_ROOT="/scratch/s5h/etowah.s5h/projects/openfold3-finetune/example/dataset"
+FINETUNE_ROOT="/path/to/openfold3-finetune"
+DATASET_ROOT="$FINETUNE_ROOT/example/dataset"
+OPENFOLD_REPO_ROOT="/path/to/openfold3-internal"
 ```
+
+The runnable wrappers in this repo read those defaults from `scripts/all.sh`.
+Set `OPENFOLD_REPO_ROOT` there, or override it at runtime:
+
+```bash
+OPENFOLD_REPO_ROOT="/path/to/openfold3-internal" ./scripts/all.sh
+```
+
+By default, the step scripts use `$FINETUNE_ROOT/example/dataset` for data and
+`$FINETUNE_ROOT/../openfold3-internal` for OpenFold3 code.
 
 ## Workflow
 
 ### 1. Merge PDB/SDF Samples Into mmCIF
 
-Run `merge_pdb_sdfs_to_cif.py` on the Fragalysis-style input directory. This
+This step 1 will probably need to be custom written for your particular input format. In OpenBind, our data comes from a database called Fragalysis. We need to convert the this format into a format that is compatible with downstream scripts. 
+
+We write a custom script which turns the Fragalysis format into a  `merge_pdb_sdfs_to_cif.py` on the Fragalysis-style input directory. This
 creates one merged `.cif` file per sample and writes an augmented CCD containing
 any promoted ligands used by those CIFs.
 
 ```bash
 python examples/finetuning_2/dataset_generation/src/merge_pdb_sdfs_to_cif.py \
-  --input-dir "$INPUT_DIR" \
+  --input-dir "$DATASET_ROOT/input_structures" \
   --output-dir "$DATASET_ROOT/merged_cifs"
 ```
 
@@ -84,7 +113,7 @@ $DATASET_ROOT/merged_cifs_monomer/process_into_monomer.log
 The small-test workflow wraps this command in:
 
 ```bash
-examples/finetuning_2/dataset_generation/scripts/03_process_into_monomer.sh
+scripts/03_process_into_monomer.sh
 ```
 
 ### 4. Run OpenFold3 Structure Preprocessing
@@ -194,8 +223,8 @@ finetuning pipeline instead of requiring separate preprocessing runs.
 Add a helper script that reads two text files with one structure id per line:
 
 ```text
-$DATASET_ROOT/splits/train_ids.txt
-$DATASET_ROOT/splits/val_ids.txt
+$DATASET_ROOT/input_splits/train_ids.txt
+$DATASET_ROOT/input_splits/val_ids.txt
 ```
 
 Then materialize the split metadata files with:
@@ -203,8 +232,8 @@ Then materialize the split metadata files with:
 ```bash
 python examples/finetuning_2/dataset_generation/src/materialize_split_metadata.py \
   --metadata-cache "$DATASET_ROOT/preprocessed/metadata.json" \
-  --train-ids "$DATASET_ROOT/splits/train_ids.txt" \
-  --val-ids "$DATASET_ROOT/splits/val_ids.txt" \
+  --train-ids "$DATASET_ROOT/input_splits/train_ids.txt" \
+  --val-ids "$DATASET_ROOT/input_splits/val_ids.txt" \
   --train-output "$DATASET_ROOT/preprocessed/metadata_train.json" \
   --val-output "$DATASET_ROOT/preprocessed/metadata_val.json"
 ```
@@ -227,7 +256,7 @@ The script should:
 The small-test workflow wraps this command in:
 
 ```bash
-examples/finetuning_2/dataset_generation/scripts/08_materialize_split_metadata.sh
+scripts/08_materialize_split_metadata.sh
 ```
 
 ### 9. Create the Weighted Training Dataset Cache
@@ -327,7 +356,7 @@ containing every preprocessed validation structure.
 Minimal command shape:
 
 ```bash
-python scripts/dataset_generation/src/create_validation_cache.py \
+python examples/finetuning_2/dataset_generation/src/create_validation_cache.py \
   --metadata-cache "$DATASET_ROOT/preprocessed/metadata_val.json" \
   --preprocessed-dir "$DATASET_ROOT/preprocessed/structure_files" \
   --alignment-representatives-fasta "$DATASET_ROOT/alignments/alignment_representatives.fasta" \

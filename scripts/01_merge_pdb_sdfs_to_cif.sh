@@ -3,15 +3,15 @@ set -euo pipefail
 
 source ~/.bashrc
 
-# Avoid conda CUDA activate hooks failing under nounset when this var is unset.
-: "${NVCC_PREPEND_FLAGS:=}"
-
 conda activate of3-internal
 
-REPO_ROOT="${REPO_ROOT:-/scratch/s5h/etowah.s5h/projects/openfold3-internal}"
-export PYTHONPATH="$REPO_ROOT${PYTHONPATH:+:$PYTHONPATH}"
-DATASET_ROOT="${DATASET_ROOT:-$REPO_ROOT/datasets/a71ev2a/small_test}"
-INPUT_DIR="${INPUT_DIR:-$DATASET_ROOT/example_input_small}"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+FINETUNE_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+OPENFOLD_REPO_ROOT="${OPENFOLD_REPO_ROOT:-${REPO_ROOT:-$FINETUNE_ROOT/../openfold3-internal}}"
+REPO_ROOT="$OPENFOLD_REPO_ROOT"
+export PYTHONPATH="$OPENFOLD_REPO_ROOT${PYTHONPATH:+:$PYTHONPATH}"
+DATASET_ROOT="${DATASET_ROOT:-$FINETUNE_ROOT/example/dataset}"
+INPUT_DIR="${INPUT_DIR:-$DATASET_ROOT/input_structures}"
 MERGED_CIF_DIR="${MERGED_CIF_DIR:-$DATASET_ROOT/merged_cifs}"
 SCRIPT_PATH="$REPO_ROOT/examples/finetuning_2/dataset_generation/src/merge_pdb_sdfs_to_cif.py"
 

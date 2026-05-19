@@ -3,17 +3,17 @@ set -euo pipefail
 
 source ~/.bashrc
 
-# Avoid conda CUDA activate hooks failing under nounset when this var is unset.
-: "${NVCC_PREPEND_FLAGS:=}"
-
 conda activate of3-internal
 
-REPO_ROOT="${REPO_ROOT:-/scratch/s5h/etowah.s5h/projects/openfold3-internal}"
-export PYTHONPATH="$REPO_ROOT${PYTHONPATH:+:$PYTHONPATH}"
-DATASET_ROOT="${DATASET_ROOT:-$REPO_ROOT/datasets/a71ev2a/small_test}"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+FINETUNE_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+OPENFOLD_REPO_ROOT="${OPENFOLD_REPO_ROOT:-${REPO_ROOT:-$FINETUNE_ROOT/../openfold3-internal}}"
+REPO_ROOT="$OPENFOLD_REPO_ROOT"
+export PYTHONPATH="$OPENFOLD_REPO_ROOT${PYTHONPATH:+:$PYTHONPATH}"
+DATASET_ROOT="${DATASET_ROOT:-$FINETUNE_ROOT/example/dataset}"
 PREPROCESSED_DIR="${PREPROCESSED_DIR:-$DATASET_ROOT/preprocessed}"
 METADATA_CACHE="${METADATA_CACHE:-$PREPROCESSED_DIR/metadata.json}"
-SPLIT_DIR="${SPLIT_DIR:-$DATASET_ROOT/splits}"
+SPLIT_DIR="${SPLIT_DIR:-$DATASET_ROOT/input_splits}"
 TRAIN_IDS="${TRAIN_IDS:-$SPLIT_DIR/train_ids.txt}"
 VAL_IDS="${VAL_IDS:-$SPLIT_DIR/val_ids.txt}"
 TRAIN_METADATA_OUTPUT="${TRAIN_METADATA_OUTPUT:-$PREPROCESSED_DIR/metadata_train.json}"
