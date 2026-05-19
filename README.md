@@ -294,11 +294,6 @@ selection. For this workflow, write a simpler script named
 `create_validation_cache.py` that converts the validation metadata cache
 directly into a `ValidationDatasetCache`.
 
-Suggested location:
-
-```text
-examples/finetuning_2/dataset_generation/src/create_validation_cache.py
-```
 
 Required inputs:
 
@@ -339,21 +334,6 @@ Implementation outline:
 10. Mark every chain and interface for validation metrics:
     `low_homology=True`, `metric_eligible=True`, and `use_metrics=True`.
 11. Write the cache with `write_datacache_to_json`.
-
-The new script should intentionally avoid:
-
-- `filter_structure_metadata_of3`
-- `assign_homology_labels`
-- `assign_metric_eligibility_labels`
-- `select_multimer_cache`
-- `select_monomer_cache`
-- `select_final_validation_data`
-
-Those functions are useful for recreating the AF3-style PDB validation set, but
-they are exactly what would prevent this finetuning validation cache from
-containing every preprocessed validation structure.
-
-Minimal command shape:
 
 ```bash
 python examples/finetuning_2/dataset_generation/src/create_validation_cache.py \
