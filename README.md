@@ -152,10 +152,10 @@ Build the alignment representatives FASTA from the preprocessed FASTA files in
 chains to alignments by comparing these same preprocessed sequences.
 
 ```bash
-python3 src/build_alignment_representatives.py \
---preprocessed-structure-dir=example/dataset/preprocessed/structure_files/ \
---output-fasta=example/dataset/alignments/alignment_representatives.fasta \
---report-json=example/dataset/alignments/alignment_representatives_report.json
+python src/build_alignment_representatives.py \
+--preprocessed-structure-dir=$DATASET_ROOT/preprocessed/structure_files/ \
+--output-fasta=$DATASET_ROOT/alignments/alignment_representatives.fasta \
+--report-json=$DATASET_ROOT/alignments/alignment_representatives_report.json
 
 ```
 
