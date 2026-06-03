@@ -67,7 +67,7 @@ def _validate_a3m_query_length(
 
 
 def _expected_main_a3m(output_dir: Path, rep_id: str) -> Path:
-    return output_dir / "main" / rep_id / "cfdb_hits.a3m"
+    return output_dir / "main" / rep_id / "colabfold_main.a3m"
 
 
 def _write_query_json(query_json_dir: Path, rep_id: str, sequence: str) -> Path:
@@ -167,7 +167,7 @@ def _build_arg_parser() -> argparse.ArgumentParser:
         "--output-dir",
         type=Path,
         required=True,
-        help="Alignment output directory. Writes main/<rep_id>/cfdb_hits.a3m.",
+        help="Alignment output directory. Writes main/<rep_id>/colabfold_main.a3m.",
     )
     parser.add_argument(
         "--query-json-dir",
