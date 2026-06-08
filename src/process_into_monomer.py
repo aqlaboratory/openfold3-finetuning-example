@@ -244,7 +244,6 @@ def _min_distance(coords_a: np.ndarray, coords_b: np.ndarray) -> float:
     distances = np.sqrt(np.sum(deltas * deltas, axis=-1))
     return float(np.min(distances))
 
-
 def _find_closest_protein_chain(
     atom_array: AtomArray,
     protein_chains: tuple[str, ...],
@@ -268,6 +267,36 @@ def _find_closest_protein_chain(
 
     return min(distance_by_chain, key=lambda item: (item[1], item[0]))
 
+def _count_contacts(coords_a: np.ndarray, coords_b: np.ndarray, cutoff: float) -> float:
+    deltas = coords_a[:, None, :] - coords_b[None, :, :]
+    distances = np.sqrt(np.sum(deltas * deltas, axis=-1))
+    contact_count = np.sum(distances <= cutoff)
+
+    return float(contact_count)
+
+def _find_biggest_protein_interface(
+    atom_array: AtomArray,
+    protein_chains: tuple[str, ...],
+    main_ligand_chain_id: str,
+) -> tuple[str, float]:
+    ligand_atoms = atom_array[(atom_array.chain_id == main_ligand_chain_id) & atom_array.hetero]
+
+    if ligand_atoms.array_length() == 0:
+        raise ValueError(f"No hetero atoms found for main ligand chain {main_ligand_chain_id}")
+
+    contacts_by_chain: list[tuple[str, float]] = []
+    for chain_id in protein_chains:
+        protein_atoms = atom_array[(atom_array.chain_id == chain_id) & (~atom_array.hetero)]
+        if protein_atoms.array_length() == 0:
+            continue
+        contacts_by_chain.append(
+            (chain_id, _count_contacts(ligand_atoms.coord, protein_atoms.coord, 6.5))
+        )
+    
+    if not contacts_by_chain:
+        raise ValueError("No protein atoms found while selecting closest chain")
+
+    return max(contacts_by_chain, key=lambda item: (item[1], item[0]))
 
 def _residue_is_within_radius(
     residue: HeteroResidue,
@@ -366,7 +395,12 @@ def process_structure(
         )
 
     main_ligand_chain = candidate_chains[0].chain_id
-    selected_protein_chain, _distance = _find_closest_protein_chain(
+    #selected_protein_chain, _distance = _find_closest_protein_chain(
+    #    atom_array=atom_array,
+    #    protein_chains=protein_chains,
+    #    main_ligand_chain_id=main_ligand_chain,
+    #)
+    selected_protein_chain, _distance = _find_biggest_protein_interface(
         atom_array=atom_array,
         protein_chains=protein_chains,
         main_ligand_chain_id=main_ligand_chain,

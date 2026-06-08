@@ -53,7 +53,7 @@ creates one merged `.cif` file per sample and writes an augmented CCD containing
 any promoted ligands used by those CIFs.
 
 ```bash
-python examples/finetuning_2/dataset_generation/src/merge_pdb_sdfs_to_cif.py \
+python src/merge_pdb_sdfs_to_cif.py \
   --input-dir "$DATASET_ROOT/input_structures" \
   --output-dir "$DATASET_ROOT/merged_cifs"
 ```
@@ -76,7 +76,7 @@ Create the matching `.bcif` file for Biotite from the augmented CCD produced in
 step 1.
 
 ```bash
-python scripts/data_preprocessing/preprocess_ccd_biotite.py \
+python $OPENFOLD_REPO_ROOT/scripts/data_preprocessing/preprocess_ccd_biotite.py \
   "$DATASET_ROOT/merged_cifs/reference_data/components_harmonized.cif" \
   "$DATASET_ROOT/merged_cifs/reference_data/components_harmonized.bcif"
 ```
@@ -97,7 +97,7 @@ chain plus the relevant ligand context. This step should:
 Run:
 
 ```bash
-python examples/finetuning_2/dataset_generation/src/process_into_monomer.py \
+python src/process_into_monomer.py \
   --input-dir "$DATASET_ROOT/merged_cifs" \
   --output-dir "$DATASET_ROOT/merged_cifs_monomer" \
   --log-path "$DATASET_ROOT/merged_cifs_monomer/process_into_monomer.log"
@@ -122,7 +122,7 @@ Run `preprocess_pdb_of3.py` on the monomerized CIFs from step 3. Pass both the
 augmented `.cif` CCD and the matching `.bcif` CCD from step 2.
 
 ```bash
-python scripts/data_preprocessing/preprocess_pdb_of3.py \
+python $OPENFOLD_REPO_ROOT/scripts/data_preprocessing/preprocess_pdb_of3.py \
   --cif-dir "$DATASET_ROOT/merged_cifs_monomer" \
   --ccd-path "$DATASET_ROOT/merged_cifs/reference_data/components_harmonized.cif" \
   --biotite-ccd-path "$DATASET_ROOT/merged_cifs/reference_data/components_harmonized.bcif" \
@@ -151,11 +151,19 @@ Build the alignment representatives FASTA from the preprocessed FASTA files in
 `structure_files`, not from the raw merged CIFs. The cache creator later maps
 chains to alignments by comparing these same preprocessed sequences.
 
+```bash
+python src/build_alignment_representatives.py \
+--preprocessed-structure-dir=$DATASET_ROOT/preprocessed/structure_files/ \
+--output-fasta=$DATASET_ROOT/alignments/alignment_representatives.fasta \
+--report-json=$DATASET_ROOT/alignments/alignment_representatives_report.json
+
+```
+
 The representative IDs should match the MSA directory names and final NPZ names:
 
 ```text
 alignments/alignment_representatives.fasta
-alignments/main/<rep_id>/colabfold_main.a3m
+alignments/main/<rep_id>/cfdb_hits.a3m
 alignment_arrays/<rep_id>.npz
 ```
 
@@ -173,13 +181,13 @@ sequence. The output must be compatible with `preparse_alignments_of3.py`.
 Required raw alignment layout:
 
 ```text
-$DATASET_ROOT/alignments/main/<rep_id>/colabfold_main.a3m
+$DATASET_ROOT/alignments/main/<rep_id>/cfdb_hits.a3m
 ```
 
 Example intended command:
 
 ```bash
-python examples/finetuning_2/dataset_generation/src/generate_msas.py \
+python src/generate_msas.py \
   --representatives-fasta "$DATASET_ROOT/alignments/alignment_representatives.fasta" \
   --output-dir "$DATASET_ROOT/alignments" \
   --query-json-dir "$DATASET_ROOT/msa_queries"
@@ -191,16 +199,16 @@ reusing it.
 
 ### 7. Preparse Raw MSAs Into Alignment Arrays
 
-Convert the raw `colabfold_main.a3m` files into compressed per-representative
+Convert the raw `cfdb_hits.a3m` files into compressed per-representative
 NPZ files.
 
 ```bash
 mkdir -p "$DATASET_ROOT/alignment_arrays"
 
-python scripts/data_preprocessing/preparse_alignments_of3.py \
+python $OPENFOLD_REPO_ROOT/scripts/data_preprocessing/preparse_alignments_of3.py \
   --alignments_directory "$DATASET_ROOT/alignments/main" \
   --alignment_array_directory "$DATASET_ROOT/alignment_arrays" \
-  --max_seq_counts '{"colabfold_main": 16384}' \
+  --max_seq_counts '{"cfdb_hits": 16384}' \
   --num_workers 4
 ```
 
@@ -230,7 +238,7 @@ $DATASET_ROOT/input_splits/val_ids.txt
 Then materialize the split metadata files with:
 
 ```bash
-python examples/finetuning_2/dataset_generation/src/materialize_split_metadata.py \
+python src/materialize_split_metadata.py \
   --metadata-cache "$DATASET_ROOT/preprocessed/metadata.json" \
   --train-ids "$DATASET_ROOT/input_splits/train_ids.txt" \
   --val-ids "$DATASET_ROOT/input_splits/val_ids.txt" \
@@ -267,7 +275,7 @@ Use the training metadata cache from step 8, the preprocessed
 ```bash
 mkdir -p "$DATASET_ROOT/caches"
 
-python scripts/data_preprocessing/create_pdb-weighted_training_dataset_cache.py \
+python $OPENFOLD_REPO_ROOT/scripts/data_preprocessing/create_pdb-weighted_training_dataset_cache.py \
   --metadata-cache "$DATASET_ROOT/preprocessed/metadata_train.json" \
   --preprocessed-dir "$DATASET_ROOT/preprocessed/structure_files" \
   --alignment-representatives-fasta "$DATASET_ROOT/alignments/alignment_representatives.fasta" \
@@ -281,6 +289,8 @@ python scripts/data_preprocessing/create_pdb-weighted_training_dataset_cache.py 
 This script requires `mmseqs` for protein clustering. It is available in the
 `of3-internal` conda environment, so run this command only after activating that
 environment.
+
+#### Note: mmseqs is not installed by default for OF3-preview2
 
 ### 10. Create a Full Validation Cache
 
@@ -336,7 +346,7 @@ Implementation outline:
 11. Write the cache with `write_datacache_to_json`.
 
 ```bash
-python examples/finetuning_2/dataset_generation/src/create_validation_cache.py \
+python src/create_validation_cache.py \
   --metadata-cache "$DATASET_ROOT/preprocessed/metadata_val.json" \
   --preprocessed-dir "$DATASET_ROOT/preprocessed/structure_files" \
   --alignment-representatives-fasta "$DATASET_ROOT/alignments/alignment_representatives.fasta" \

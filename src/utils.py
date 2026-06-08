@@ -76,6 +76,8 @@ def extract_pdb_metadata(pdb_path: Path) -> tuple[str, str, float | None]:
 
     return release_date, experimental_method, resolution
 
+def _make_protein_sequence(residue_iter):
+    pass
 
 def _inject_required_cif_metadata(
     cif_path: Path,
@@ -150,9 +152,19 @@ def _inject_required_cif_metadata(
 
             monomers: list[str] = []
             one_letter_codes: list[str] = []
-
+            
+            prev_res_id = 0
             for i, residue in enumerate(struc.residue_iter(chain), start=1):
                 mon_id = str(residue.res_name[0])
+                res_id = int(residue.res_id[0])
+                #if molecule_type == int(MoleculeType.PROTEIN):
+                #    print(mon_id, res_id)
+                
+                # Add X for the residue gaps
+                if res_id != (prev_res_id + 1):
+                    #print(f'Gap between {res_id}--{prev_res_id}')
+                    one_letter_codes += ['X']*(res_id-prev_res_id-1)
+
                 monomers.append(mon_id)
                 entity_poly_seq_rows.append((entity_id, str(i), mon_id))
 
@@ -162,6 +174,8 @@ def _inject_required_cif_metadata(
                     one_letter_codes.append(RNA_RESTYPE_3TO1.get(mon_id, "N"))
                 else:
                     one_letter_codes.append(DNA_RESTYPE_3TO1.get(mon_id, "N"))
+
+                prev_res_id = res_id
 
             if monomers and entity_id not in seen_entities:
                 entity_poly_rows.append((entity_id, "".join(one_letter_codes)))
@@ -212,9 +226,12 @@ def prepare_atom_array_for_of3_cif_write(atom_array):
     next_polymer_res_id_by_auth_chain: dict[str, int] = {}
 
     residue_starts = struc.get_residue_starts(atom_array, add_exclusive_stop=True)
+    start_resid = atom_array.res_id[0]
     for start, stop in zip(residue_starts[:-1], residue_starts[1:], strict=False):
         auth_chain = str(atom_array.chain_id[start])
         res_id = int(atom_array.res_id[start])
+
+        #print(start, res_id)
         ins_code = (
             str(atom_array.ins_code[start])
             if "ins_code" in atom_array.get_annotation_categories()
@@ -233,10 +250,13 @@ def prepare_atom_array_for_of3_cif_write(atom_array):
             label = polymer_chain_label_by_auth_chain[auth_chain]
             moltype = int(MoleculeType.PROTEIN)
             dense_res_id = next_polymer_res_id_by_auth_chain.get(auth_chain, 1)
+            dense_res_id = res_id - (start_resid) + 1
+            #print('\t', dense_res_id)
             atom_array.res_id[start:stop] = dense_res_id
             if "ins_code" in atom_array.get_annotation_categories():
                 atom_array.ins_code[start:stop] = ""
-            next_polymer_res_id_by_auth_chain[auth_chain] = dense_res_id + 1
+            #next_polymer_res_id_by_auth_chain[auth_chain] = dense_res_id + 1
+            next_polymer_res_id_by_auth_chain[auth_chain] = dense_res_id 
         else:
             key = (auth_chain, res_id, ins_code, res_name)
             if key not in ligand_component_label_by_key:

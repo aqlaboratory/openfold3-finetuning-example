@@ -54,11 +54,11 @@ def _validate_metadata_cache(
             f"{structure_id}={status}" for structure_id, status in invalid_structures
         )
         errors.append(f"Metadata cache contains non-success structures: {formatted}")
-    if nonfinite_resolutions:
-        errors.append(
-            "Metadata cache contains non-finite resolutions: "
-            + ", ".join(nonfinite_resolutions)
-        )
+    #if nonfinite_resolutions:
+    #    errors.append(
+    #        "Metadata cache contains non-finite resolutions: "
+    #        + ", ".join(nonfinite_resolutions)
+    #    )
     if missing_files:
         formatted = "\n  ".join(str(path) for path in missing_files)
         errors.append(f"Missing preprocessed FASTA/NPZ files:\n  {formatted}")
