@@ -20,7 +20,7 @@ def main():
     merged_cifs_dir = os.path.abspath(f'{args.output_dir}/merged_cifs')
     cmd1 = f'python {FINETUNE_ROOT}/src/merge_pdb_sdfs_to_cif.py --input-dir {args.fragalysis_dir} --output-dir {merged_cifs_dir}'.split()
     subprocess.run(cmd1)
-
+    
     # Create new CCD with new small molecules added
     cmd2 = f'python {OPENFOLD_REPO_ROOT}/scripts/data_preprocessing/preprocess_ccd_biotite.py {merged_cifs_dir}/reference_data/components_harmonized.cif {merged_cifs_dir}/reference_data/components_harmonized.bcif'.split()
     subprocess.run(cmd2)
@@ -31,7 +31,8 @@ def main():
     subprocess.run(cmd3)
 
     preprocessed_dir = f'{args.output_dir}/preprocessed'
-    cmd4 = f'python {OPENFOLD_REPO_ROOT}/scripts/data_preprocessing/preprocess_pdb_of3.py --cif-dir {monomer_cifs_dir} --ccd-path {merged_cifs_dir}/reference_data/components_harmonized.cif --biotite-ccd-path {merged_cifs_dir}/reference_data/components_harmonized.bcif --out-dir {preprocessed_dir} --output-format npz --num-workers 0 --log-level INFO'.split()
+    #cmd4 = f'python {OPENFOLD_REPO_ROOT}/scripts/data_preprocessing/preprocess_pdb_of3.py --cif-dir {monomer_cifs_dir} --ccd-path {merged_cifs_dir}/reference_data/components_harmonized.cif --biotite-ccd-path {merged_cifs_dir}/reference_data/components_harmonized.bcif --out-dir {preprocessed_dir} --output-format npz --num-workers 0 --log-level INFO'.split()
+    cmd4 = f'python {OPENFOLD_REPO_ROOT}/scripts/data_preprocessing/preprocess_pdb_of3.py --cif-dir {monomer_cifs_dir} --ccd-path {merged_cifs_dir}/reference_data/components_harmonized.cif --biotite-ccd-path {merged_cifs_dir}/reference_data/components_harmonized.bcif --out-dir {preprocessed_dir} --output-format npz --output-format cif --num-workers 1 --log-level INFO'.split()
     subprocess.run(cmd4)
     
     # Cluster structure sequences, and get representative sequences to use for subsequent MSA calculations
@@ -48,7 +49,6 @@ def main():
     aln_arrays = f'{args.output_dir}/alignment_arrays'
     os.makedirs(f'{aln_arrays}', exist_ok=True)
     cmd7 = f'python {OPENFOLD_REPO_ROOT}/scripts/data_preprocessing/preparse_alignments_of3.py --alignments_directory {alignments_dir}/main --alignment_array_directory {aln_arrays} --num_workers 1 --max_seq_counts'.split()
-    #cmd7.append('{"cfdb_hits": 16384}')
     cmd7.append('{"colabfold_main": 16384}')
     subprocess.run(cmd7)
 
