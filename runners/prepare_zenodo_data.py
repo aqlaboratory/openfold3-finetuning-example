@@ -13,13 +13,13 @@ import sys
 import argparse
 from pathlib import Path
 
-from _common import DEFAULT_OPENFOLD_REPO_ROOT, FINETUNE_ROOT, build_alignments, run
+from _common import FINETUNE_ROOT, build_alignments, resolve_openfold_repo, run
 
 parser = argparse.ArgumentParser()
 
 parser.add_argument('--input_dir', '-i', required=True, help='Path to the unzipped Zenodo release (the OpenBind_EV-A71_2A/ directory)')
 parser.add_argument('--output_dir', '-o', required=True, help='Path to directory where preprocessing outputs will be stored')
-parser.add_argument('--openfold_repo', default=DEFAULT_OPENFOLD_REPO_ROOT, help='Path to the OpenFold3 repo (default: $OPENFOLD_REPO_ROOT or ../openfold3)')
+parser.add_argument('--openfold_repo', help='Path to the OpenFold3 repo (required, or set $OPENFOLD_REPO_ROOT)')
 parser.add_argument('--msa', choices=['provided', 'colabfold'], default='provided',
                     help="'provided': crop the MSA shipped with the release to each structure's sequence. "
                          "'colabfold': query the ColabFold MSA server instead")
@@ -54,6 +54,7 @@ def stage_structures(input_dir, staged_dir):
 
 
 def main():
+    args.openfold_repo = resolve_openfold_repo(args.openfold_repo)
     python = sys.executable
     openfold_scripts = Path(args.openfold_repo) / 'scripts' / 'data_preprocessing'
     input_dir = Path(args.input_dir).resolve()

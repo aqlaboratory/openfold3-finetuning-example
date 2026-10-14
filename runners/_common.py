@@ -5,7 +5,25 @@ import subprocess
 from pathlib import Path
 
 FINETUNE_ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_OPENFOLD_REPO_ROOT = os.environ.get('OPENFOLD_REPO_ROOT', str(FINETUNE_ROOT.parent / 'openfold3'))
+OPENFOLD_REPO_ROOT_ENV = 'OPENFOLD_REPO_ROOT'
+
+
+def resolve_openfold_repo(cli_value):
+    """Path to the OpenFold3 repo, from --openfold_repo or $OPENFOLD_REPO_ROOT.
+
+    There is deliberately no fallback location: guessing one only moves the
+    failure to a confusing place deep in a subprocess.
+    """
+    value = cli_value or os.environ.get(OPENFOLD_REPO_ROOT_ENV)
+    if not value:
+        raise SystemExit(
+            'No OpenFold3 repo given. Pass --openfold_repo /path/to/openfold3 '
+            f'or set ${OPENFOLD_REPO_ROOT_ENV}.')
+    repo = Path(value).expanduser().resolve()
+    if not (repo / 'scripts' / 'data_preprocessing').is_dir():
+        raise SystemExit(
+            f'{repo} does not look like the OpenFold3 repo: no scripts/data_preprocessing/ in it.')
+    return repo
 
 
 def run(cmd, openfold_repo):

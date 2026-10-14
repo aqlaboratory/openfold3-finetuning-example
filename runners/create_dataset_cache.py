@@ -11,7 +11,7 @@ import json
 import argparse
 from pathlib import Path
 
-from _common import DEFAULT_OPENFOLD_REPO_ROOT, FINETUNE_ROOT, run
+from _common import FINETUNE_ROOT, resolve_openfold_repo, run
 
 sys.path.insert(0, str(FINETUNE_ROOT / 'src'))
 from materialize_split_metadata import _build_subset, _read_ids, _write_json
@@ -25,12 +25,13 @@ parser.add_argument('--ids', required=True, help='txt file with structure IDs, o
 parser.add_argument('--dataset_dir', required=True, help='Output directory of runners/prepare_zenodo_data.py')
 parser.add_argument('--output', help='Path of the cache to write (default: <dataset_dir>/caches/train_cache.json or val_cache.json)')
 parser.add_argument('--dataset_name', help='Dataset name stored in the cache (default: <dataset_dir name>-train or -val)')
-parser.add_argument('--openfold_repo', default=DEFAULT_OPENFOLD_REPO_ROOT, help='Path to the OpenFold3 repo (default: $OPENFOLD_REPO_ROOT or ../openfold3)')
+parser.add_argument('--openfold_repo', help='Path to the OpenFold3 repo (required, or set $OPENFOLD_REPO_ROOT)')
 
 args = parser.parse_args()
 
 
 def main():
+    args.openfold_repo = resolve_openfold_repo(args.openfold_repo)
     python = sys.executable
     dataset_dir = Path(args.dataset_dir).resolve()
     preprocessed_dir = dataset_dir / 'preprocessed'

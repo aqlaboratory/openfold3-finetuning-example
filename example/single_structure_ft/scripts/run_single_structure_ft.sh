@@ -8,10 +8,10 @@
 #   3. Write the runner yaml and launch training
 #
 # Usage (from any directory, with the OpenFold3 conda env active):
-#   ./run_single_structure_ft.sh
+#   OPENFOLD_REPO_ROOT=/path/to/openfold3 ./run_single_structure_ft.sh
 #
 # Overrides:
-#   OPENFOLD_REPO_ROOT  path to the OpenFold3 repo        (default: <repo>/../openfold3)
+#   OPENFOLD_REPO_ROOT  path to the OpenFold3 repo        (required)
 #   CHECKPOINT          base model weights to fine-tune   (default: $OPENFOLD_REPO_ROOT/weights/of3-p2-155k.pt)
 #   MAX_STEPS           number of optimizer steps         (default: 100)
 #   VAL_EVERY           run validation every N steps      (default: 10)
@@ -23,7 +23,11 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 EXAMPLE_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 FINETUNE_ROOT="$(cd "$EXAMPLE_DIR/../.." && pwd)"
 
-export OPENFOLD_REPO_ROOT="${OPENFOLD_REPO_ROOT:-$FINETUNE_ROOT/../openfold3}"
+if [[ -z "${OPENFOLD_REPO_ROOT:-}" ]]; then
+  echo "OPENFOLD_REPO_ROOT is not set. Point it at your OpenFold3 repo, e.g." >&2
+  echo "  OPENFOLD_REPO_ROOT=~/projects/openfold3 $0" >&2
+  exit 1
+fi
 CHECKPOINT="${CHECKPOINT:-$OPENFOLD_REPO_ROOT/weights/of3-p2-155k.pt}"
 MAX_STEPS="${MAX_STEPS:-100}"
 VAL_EVERY="${VAL_EVERY:-10}"

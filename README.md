@@ -36,9 +36,9 @@ its preprocessing scripts, so you need the source tree, not just an installed wh
 ```bash
 git clone git@github.com:aqlaboratory/openfold3-finetuning-example.git
 
-# Clone OF3 as a sibling directory named openfold3 (the default the runners look for)
-git clone git@github.com:aqlaboratory/openfold-3.git openfold3
-cd openfold3
+# Clone OF3 wherever you like; you point the runners at it explicitly
+git clone git@github.com:aqlaboratory/openfold-3.git
+cd openfold-3
 
 conda create -n of3-internal python=3.13 -y
 conda activate of3-internal
@@ -50,17 +50,22 @@ setup_openfold
 
 ### Pointing at the OpenFold3 repo
 
-Every runner needs to know where the OpenFold3 source tree is. It resolves in this order:
+Every runner needs to know where the OpenFold3 source tree is, and there is no default or
+guessed location. Give it explicitly, either per invocation:
 
-1. `--openfold_repo /path/to/openfold3`
-2. `$OPENFOLD_REPO_ROOT`
-3. `../openfold3`, a sibling of this repo
+```bash
+python runners/prepare_zenodo_data.py ... --openfold_repo /path/to/openfold3
+```
 
-If you cloned OpenFold3 somewhere else, or under a different directory name, set it once:
+or once for the shell, which the runners and the example scripts both read:
 
 ```bash
 export OPENFOLD_REPO_ROOT=/path/to/openfold3
 ```
+
+`--openfold_repo` wins over the environment variable. If neither is set, or the path does not
+contain `scripts/data_preprocessing/`, the runner stops immediately and says so rather than failing
+later inside a subprocess.
 
 The runners use this to find `scripts/data_preprocessing/` (for `preprocess_ccd_biotite.py`,
 `preprocess_pdb_of3.py` and `create_pdb-weighted_training_dataset_cache.py`) and to put the repo on
@@ -80,7 +85,7 @@ one EV-A71 2A structure (`a71ev2a-x0812a`) and validates on a close analog (`a71
 5-fluoro version of the same ligand), so you should see the model overfit quickly.
 
 ```bash
-./example/single_structure_ft/scripts/run_single_structure_ft.sh
+OPENFOLD_REPO_ROOT=/path/to/openfold3 ./example/single_structure_ft/scripts/run_single_structure_ft.sh
 ```
 
 It preprocesses `dataset_raw/`, builds train and validation caches, writes a runner yaml, and
@@ -88,7 +93,7 @@ launches training. Overrides:
 
 | Variable | Default | Meaning |
 | --- | --- | --- |
-| `OPENFOLD_REPO_ROOT` | `../openfold3` | Path to the OpenFold3 repo |
+| `OPENFOLD_REPO_ROOT` | *(required)* | Path to the OpenFold3 repo |
 | `CHECKPOINT` | `$OPENFOLD_REPO_ROOT/weights/of3-p2-155k.pt` | Base weights to fine-tune |
 | `MAX_STEPS` | `100` | Optimizer steps |
 | `VAL_EVERY` | `10` | Validate every N steps |
@@ -114,7 +119,8 @@ To run this and the cache step below in one go, using the same train/validation
 split as the write-up:
 
 ```bash
-ZENODO_DIR=/path/to/OpenBind_EV-A71_2A ./example/EV712a/run_ev_a71_2a_prep.sh
+ZENODO_DIR=/path/to/OpenBind_EV-A71_2A OPENFOLD_REPO_ROOT=/path/to/openfold3 \
+  ./example/EV712a/run_ev_a71_2a_prep.sh
 ```
 
 Two steps here are specific to novel chemical matter and do not appear in typical PDB processing:

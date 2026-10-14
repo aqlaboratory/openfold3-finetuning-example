@@ -9,7 +9,7 @@ import sys
 import argparse
 from pathlib import Path
 
-from _common import DEFAULT_OPENFOLD_REPO_ROOT, FINETUNE_ROOT, build_alignments, run
+from _common import FINETUNE_ROOT, build_alignments, resolve_openfold_repo, run
 
 sys.path.insert(0, str(FINETUNE_ROOT / 'src'))
 from utils import DEFAULT_CCD_URL, ensure_ccd_file
@@ -22,13 +22,14 @@ parser.add_argument('--ccd_path', help='PDB Chemical Component Dictionary (compo
                                        '<output_dir>/reference_data/components.cif if not given')
 parser.add_argument('--msa_a3m', help='Precomputed A3M MSA to crop to each structure\'s sequence (e.g. EV-A71_2A_cfdb_msa.a3m '
                                       'from the Zenodo release). If not given, MSAs are fetched from the ColabFold server')
-parser.add_argument('--openfold_repo', default=DEFAULT_OPENFOLD_REPO_ROOT, help='Path to the OpenFold3 repo (default: $OPENFOLD_REPO_ROOT or ../openfold3)')
+parser.add_argument('--openfold_repo', help='Path to the OpenFold3 repo (required, or set $OPENFOLD_REPO_ROOT)')
 parser.add_argument('--num_workers', type=int, default=1, help='Workers for OpenFold3 structure preprocessing')
 
 args = parser.parse_args()
 
 
 def main():
+    args.openfold_repo = resolve_openfold_repo(args.openfold_repo)
     python = sys.executable
     openfold_scripts = Path(args.openfold_repo) / 'scripts' / 'data_preprocessing'
     input_dir = Path(args.input_dir).resolve()

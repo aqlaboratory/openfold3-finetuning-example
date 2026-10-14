@@ -14,7 +14,8 @@
 # node. See example/training/ for runner configs, and section 4 of the README.
 #
 # Usage (with the OpenFold3 conda env active):
-#   ZENODO_DIR=/path/to/OpenBind_EV-A71_2A ./run_ev_a71_2a_prep.sh
+#   ZENODO_DIR=/path/to/OpenBind_EV-A71_2A OPENFOLD_REPO_ROOT=/path/to/openfold3 \
+#     ./run_ev_a71_2a_prep.sh
 #
 # Get the release from https://zenodo.org/records/22142262 and unzip it; it
 # should contain structures/ and EV-A71_2A_cfdb_msa.a3m.
@@ -22,7 +23,7 @@
 # Overrides:
 #   ZENODO_DIR          unzipped release           (required)
 #   OUTPUT_DIR          where outputs go           (default: <repo>/dataset/prepared)
-#   OPENFOLD_REPO_ROOT  path to the OpenFold3 repo (default: <repo>/../openfold3)
+#   OPENFOLD_REPO_ROOT  path to the OpenFold3 repo (required)
 #   NUM_WORKERS         structure preprocessing    (default: 8)
 #   DATASET_NAME        cache name prefix          (default: ev-a71-2a)
 #   MSA                 provided | colabfold       (default: provided)
@@ -32,7 +33,11 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 FINETUNE_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 
-export OPENFOLD_REPO_ROOT="${OPENFOLD_REPO_ROOT:-$FINETUNE_ROOT/../openfold3}"
+if [[ -z "${OPENFOLD_REPO_ROOT:-}" ]]; then
+  echo "OPENFOLD_REPO_ROOT is not set. Point it at your OpenFold3 repo, e.g." >&2
+  echo "  OPENFOLD_REPO_ROOT=~/projects/openfold3 $0" >&2
+  exit 1
+fi
 OUTPUT_DIR="${OUTPUT_DIR:-$FINETUNE_ROOT/dataset/prepared}"
 NUM_WORKERS="${NUM_WORKERS:-8}"
 DATASET_NAME="${DATASET_NAME:-ev-a71-2a}"
