@@ -5,8 +5,8 @@ The Zenodo release nests each binding event as
     structures/<compound_group>/<complex_id>/<complex_id>_complex_ref.pdb
                                             <complex_id>_ligand_ref.sdf
 so we first stage it into the Fragalysis-style layout that merge_pdb_sdfs_to_cif.py
-expects (<complex_id>/<complex_id>.pdb + <complex_id>_ligand.sdf), then run the same
-preprocessing steps as Py_pipeline_wrapper.py up to (and including) alignment arrays.
+expects (<complex_id>/<complex_id>.pdb + <complex_id>_ligand.sdf), then run preprocessing
+up to (and including) alignment arrays.
 Train/val caches are created afterwards with runners/create_dataset_cache.py.
 """
 import sys
