@@ -58,49 +58,7 @@
         "A71EV2A-x0812a_1": {
             "conformer_gen_strategy": "default",
             "fallback_conformer_pdb_id": null,
-            "canonical_smiles": "CN1[N][C](C(N)=O)[C]2CCCC[C]21",
-            "set_fallback_to_nan": false,
-            "residue_count": 1
-        },
-        "VAL": {
-            "conformer_gen_strategy": "default",
-            "fallback_conformer_pdb_id": null,
-            "canonical_smiles": "CC(C)[C@H](N)C(=O)O",
-            "set_fallback_to_nan": false,
-            "residue_count": 1
-        },
-        "GLU": {
-            "conformer_gen_strategy": "default",
-            "fallback_conformer_pdb_id": null,
-            "canonical_smiles": "N[C@@H](CCC(=O)O)C(=O)O",
-            "set_fallback_to_nan": false,
-            "residue_count": 1
-        },
-        "ALA": {
-            "conformer_gen_strategy": "default",
-            "fallback_conformer_pdb_id": null,
-            "canonical_smiles": "C[C@H](N)C(=O)O",
-            "set_fallback_to_nan": false,
-            "residue_count": 1
-        },
-        "GLY": {
-            "conformer_gen_strategy": "default",
-            "fallback_conformer_pdb_id": null,
-            "canonical_smiles": "NCC(=O)O",
-            "set_fallback_to_nan": false,
-            "residue_count": 1
-        },
-        "CYS": {
-            "conformer_gen_strategy": "default",
-            "fallback_conformer_pdb_id": null,
-            "canonical_smiles": "N[C@@H](CS)C(=O)O",
-            "set_fallback_to_nan": false,
-            "residue_count": 1
-        },
-        "MET": {
-            "conformer_gen_strategy": "default",
-            "fallback_conformer_pdb_id": null,
-            "canonical_smiles": "CSCC[C@H](N)C(=O)O",
+            "canonical_smiles": "Cn1nc(C(N)=O)c2ccccc21",
             "set_fallback_to_nan": false,
             "residue_count": 1
         },
@@ -111,17 +69,17 @@
             "set_fallback_to_nan": false,
             "residue_count": 1
         },
-        "PRO": {
+        "GLY": {
             "conformer_gen_strategy": "default",
             "fallback_conformer_pdb_id": null,
-            "canonical_smiles": "O=C(O)[C@@H]1CCCN1",
+            "canonical_smiles": "NCC(=O)O",
             "set_fallback_to_nan": false,
             "residue_count": 1
         },
-        "PHE": {
+        "TYR": {
             "conformer_gen_strategy": "default",
             "fallback_conformer_pdb_id": null,
-            "canonical_smiles": "N[C@@H](Cc1ccccc1)C(=O)O",
+            "canonical_smiles": "N[C@@H](Cc1ccc(O)cc1)C(=O)O",
             "set_fallback_to_nan": false,
             "residue_count": 1
         },
@@ -129,6 +87,34 @@
             "conformer_gen_strategy": "default",
             "fallback_conformer_pdb_id": null,
             "canonical_smiles": "CC[C@H](C)[C@H](N)C(=O)O",
+            "set_fallback_to_nan": false,
+            "residue_count": 1
+        },
+        "MET": {
+            "conformer_gen_strategy": "default",
+            "fallback_conformer_pdb_id": null,
+            "canonical_smiles": "CSCC[C@H](N)C(=O)O",
+            "set_fallback_to_nan": false,
+            "residue_count": 1
+        },
+        "LYS": {
+            "conformer_gen_strategy": "default",
+            "fallback_conformer_pdb_id": null,
+            "canonical_smiles": "N[C@@H](CCCC[NH3+])C(=O)O",
+            "set_fallback_to_nan": false,
+            "residue_count": 1
+        },
+        "HIS": {
+            "conformer_gen_strategy": "default",
+            "fallback_conformer_pdb_id": null,
+            "canonical_smiles": "N[C@@H](Cc1c[nH]c[nH+]1)C(=O)O",
+            "set_fallback_to_nan": false,
+            "residue_count": 1
+        },
+        "CYS": {
+            "conformer_gen_strategy": "default",
+            "fallback_conformer_pdb_id": null,
+            "canonical_smiles": "N[C@@H](CS)C(=O)O",
             "set_fallback_to_nan": false,
             "residue_count": 1
         },
@@ -146,38 +132,10 @@
             "set_fallback_to_nan": false,
             "residue_count": 1
         },
-        "TYR": {
+        "PHE": {
             "conformer_gen_strategy": "default",
             "fallback_conformer_pdb_id": null,
-            "canonical_smiles": "N[C@@H](Cc1ccc(O)cc1)C(=O)O",
-            "set_fallback_to_nan": false,
-            "residue_count": 1
-        },
-        "THR": {
-            "conformer_gen_strategy": "default",
-            "fallback_conformer_pdb_id": null,
-            "canonical_smiles": "C[C@@H](O)[C@H](N)C(=O)O",
-            "set_fallback_to_nan": false,
-            "residue_count": 1
-        },
-        "ASN": {
-            "conformer_gen_strategy": "default",
-            "fallback_conformer_pdb_id": null,
-            "canonical_smiles": "NC(=O)C[C@H](N)C(=O)O",
-            "set_fallback_to_nan": false,
-            "residue_count": 1
-        },
-        "GLN": {
-            "conformer_gen_strategy": "default",
-            "fallback_conformer_pdb_id": null,
-            "canonical_smiles": "NC(=O)CC[C@H](N)C(=O)O",
-            "set_fallback_to_nan": false,
-            "residue_count": 1
-        },
-        "HIS": {
-            "conformer_gen_strategy": "default",
-            "fallback_conformer_pdb_id": null,
-            "canonical_smiles": "N[C@@H](Cc1c[nH]c[nH+]1)C(=O)O",
+            "canonical_smiles": "N[C@@H](Cc1ccccc1)C(=O)O",
             "set_fallback_to_nan": false,
             "residue_count": 1
         },
@@ -188,10 +146,17 @@
             "set_fallback_to_nan": false,
             "residue_count": 1
         },
-        "LYS": {
+        "ALA": {
             "conformer_gen_strategy": "default",
             "fallback_conformer_pdb_id": null,
-            "canonical_smiles": "N[C@@H](CCCC[NH3+])C(=O)O",
+            "canonical_smiles": "C[C@H](N)C(=O)O",
+            "set_fallback_to_nan": false,
+            "residue_count": 1
+        },
+        "VAL": {
+            "conformer_gen_strategy": "default",
+            "fallback_conformer_pdb_id": null,
+            "canonical_smiles": "CC(C)[C@H](N)C(=O)O",
             "set_fallback_to_nan": false,
             "residue_count": 1
         },
@@ -202,10 +167,45 @@
             "set_fallback_to_nan": false,
             "residue_count": 1
         },
+        "GLU": {
+            "conformer_gen_strategy": "default",
+            "fallback_conformer_pdb_id": null,
+            "canonical_smiles": "N[C@@H](CCC(=O)O)C(=O)O",
+            "set_fallback_to_nan": false,
+            "residue_count": 1
+        },
+        "ASN": {
+            "conformer_gen_strategy": "default",
+            "fallback_conformer_pdb_id": null,
+            "canonical_smiles": "NC(=O)C[C@H](N)C(=O)O",
+            "set_fallback_to_nan": false,
+            "residue_count": 1
+        },
+        "THR": {
+            "conformer_gen_strategy": "default",
+            "fallback_conformer_pdb_id": null,
+            "canonical_smiles": "C[C@@H](O)[C@H](N)C(=O)O",
+            "set_fallback_to_nan": false,
+            "residue_count": 1
+        },
+        "GLN": {
+            "conformer_gen_strategy": "default",
+            "fallback_conformer_pdb_id": null,
+            "canonical_smiles": "NC(=O)CC[C@H](N)C(=O)O",
+            "set_fallback_to_nan": false,
+            "residue_count": 1
+        },
+        "PRO": {
+            "conformer_gen_strategy": "default",
+            "fallback_conformer_pdb_id": null,
+            "canonical_smiles": "O=C(O)[C@@H]1CCCN1",
+            "set_fallback_to_nan": false,
+            "residue_count": 1
+        },
         "A71EV2A-x2351a_1": {
             "conformer_gen_strategy": "default",
             "fallback_conformer_pdb_id": null,
-            "canonical_smiles": "CN1[N][C](C(N)=O)[C]2C[C](F)CC[C]21",
+            "canonical_smiles": "Cn1nc(C(N)=O)c2cc(F)ccc21",
             "set_fallback_to_nan": false,
             "residue_count": 1
         }

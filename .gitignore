@@ -16,3 +16,6 @@ dataset/*
 
 # CCD reference data: regenerable pipeline artifacts, >100MB (GitHub blob limit)
 **/reference_data/
+
+# Training run outputs (runner yaml, checkpoints, logs)
+**/train_output/
