@@ -72,11 +72,52 @@ The runners use this to find `scripts/data_preprocessing/` (for `preprocess_ccd_
 `PYTHONPATH` for the subprocesses they spawn. Run everything with the OpenFold3 conda env active —
 the runners invoke `sys.executable`, so the subprocesses inherit the env you launch from.
 
-### Model weights
+### Model weights, and which OpenFold3 commit goes with which checkpoint
 
-Fine-tuning starts from a base OpenFold3 checkpoint. The example expects
-`$OPENFOLD_REPO_ROOT/weights/of3-p2-155k.pt`; override with `CHECKPOINT=/path/to/weights.pt` or by
-editing `restart_checkpoint_path` in your runner yaml.
+Fine-tuning starts from a base OpenFold3 checkpoint. **The base checkpoint determines which
+OpenFold3 commit you must check out** — the two current checkpoints need different, mutually
+exclusive versions, because the model architecture changed between them.
+
+| Base checkpoint | File | OpenFold3 version | Check out |
+| --- | --- | --- | --- |
+| `openfold3-p2-155k` | `of3-p2-155k.pt` | `>=0.4,<0.4.4dev0` | tag `0.4.3` (`0bb17be5`) |
+| `openbind-2025-06-30-174k` | `of3-ob-2025-06-30-174k.pt` | `>=0.5.0` | tag `v0.5.0` (`c4771653`) |
+
+```bash
+cd $OPENFOLD_REPO_ROOT
+
+# to fine-tune openfold3-p2
+git checkout 0.4.3
+
+# to fine-tune openbind-0
+git checkout v0.5.0
+
+pip install -e .   # re-install after switching, the package version is pinned at install time
+```
+
+Those constraints are upstream's own, from `OPENFOLD_MODEL_CHECKPOINT_REGISTRY` in
+`openfold3/entry_points/parameters.py` and `docs/source/parameters_reference.md` at `v0.5.0`.
+Note the registry caps p2 at `<0.4.4dev0` while that doc table says `<0.5`; the registry is what
+the code enforces, so `0.4.0`–`0.4.3` is the safe range for p2.
+
+You cannot mix them. The two checkpoints are different architectures. p2 carries a per-block
+`diffusion_transformer.blocks.N.attention_pair_bias.layer_norm_z` — 24 blocks, mirrored under
+`sample_diffusion.`, so 48 parameters that openbind does not have (4,935 parameters in total).
+openbind instead has one shared `diffusion_transformer.layer_norm_z` per copy (4,890). The openbind
+checkpoint
+also carries `version_tensor = [2, 0, 0]`, matching `MODEL_VERSION` at `v0.5.0`, whereas `0.4.0`
+through `0.4.5` declare `[1, 0, 0]`. Loading the wrong pair fails with missing and unexpected
+state-dict keys rather than silently misbehaving.
+
+A legacy `openfold3-p1` (`of3_ft3_v1.pt`, `<0.4`) also exists but is deprecated upstream.
+
+Everything in this repo was run and verified against tag `0.4.3` with `of3-p2-155k.pt`. The
+preprocessing runners call into the OpenFold3 source tree, so if you switch to `v0.5.0` for
+openbind, re-check the data preparation steps as well as training.
+
+The example expects `$OPENFOLD_REPO_ROOT/weights/of3-p2-155k.pt`; override with
+`CHECKPOINT=/path/to/weights.pt` or by editing `restart_checkpoint_path` in your runner yaml.
+Running `setup_openfold` downloads the default checkpoint for whichever version is checked out.
 
 ## Quick start: the single-structure example
 
