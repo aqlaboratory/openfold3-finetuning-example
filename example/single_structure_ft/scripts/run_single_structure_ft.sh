@@ -15,6 +15,13 @@
 #   CHECKPOINT          base model weights to fine-tune   (default: $OPENFOLD_REPO_ROOT/weights/of3-p2-155k.pt)
 #   MAX_STEPS           number of optimizer steps         (default: 100)
 #   VAL_EVERY           run validation every N steps      (default: 10)
+#   PRECISION           trainer precision                 (default: 32-true)
+#   EMA_DECAY           EMA decay; 0.9 is ~10-step half-life, suited to a
+#                       short run. OpenFold3 defaults to 0.999 (~700 steps),
+#                       which barely moves over 100 steps  (default: 0.9)
+#   WARMUP_STEPS        linear LR warmup steps            (default: 100)
+#   LEARNING_RATE       peak LR; the write-up's recommendation at these batch
+#                       sizes. OpenFold3 defaults to 0.0018  (default: 0.0003)
 #   SKIP_PREP=1         reuse an existing dataset_processed/
 #   SKIP_TRAIN=1        only prepare the data
 #
@@ -38,6 +45,10 @@ if [[ -z "${OPENFOLD_REPO_ROOT:-}" ]]; then
 fi
 CHECKPOINT="${CHECKPOINT:-$OPENFOLD_REPO_ROOT/weights/of3-p2-155k.pt}"
 MAX_STEPS="${MAX_STEPS:-100}"
+PRECISION="${PRECISION:-32-true}"
+EMA_DECAY="${EMA_DECAY:-0.9}"
+WARMUP_STEPS="${WARMUP_STEPS:-100}"
+LEARNING_RATE="${LEARNING_RATE:-0.0003}"
 VAL_EVERY="${VAL_EVERY:-10}"
 PYTHON="${PYTHON:-python}"
 
@@ -116,7 +127,7 @@ $LOGGING_CONFIG
 pl_trainer_args:
   devices: 1
   num_nodes: 1
-  precision: bf16-mixed
+  precision: $PRECISION
   max_epochs: -1
   max_steps: $MAX_STEPS
   num_sanity_val_steps: 0
@@ -139,6 +150,12 @@ model_update:
           use_conditioning_prob: 0.8
     settings:
       blocks_per_ckpt: 1
+      ema:
+        decay: $EMA_DECAY
+      lr_scheduler:
+        warmup_no_steps: $WARMUP_STEPS
+      optimizer:
+        learning_rate: $LEARNING_RATE
 
 dataset_configs:
   train:

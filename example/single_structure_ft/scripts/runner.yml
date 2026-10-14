@@ -1,0 +1,136 @@
+# Record of the verified single-structure fine-tuning run.
+#
+# This file is NOT an input. scripts/run_single_structure_ft.sh GENERATES its own
+# copy at example/single_structure_ft/train_output/runner.yml on every launch; this
+# is a committed snapshot of what that produced, so the configuration used is
+# reviewable without re-running.
+#
+# Run with it directly instead of the script if you prefer:
+#   python -m openfold3.run_openfold train --runner_yaml <this file> --seed 42
+# in which case edit the absolute paths below first -- they point at the machine
+# this was generated on.
+#
+# Settings that differ from OpenFold3 defaults, and why:
+#   precision: 32-true                 full fp32 rather than bf16-mixed
+#   ema.decay: 0.9                     ~10-step half-life; the 0.999 default is
+#                                      ~700 steps, longer than this whole run
+#   lr_scheduler.warmup_no_steps: 100  default is 1000, i.e. 10x the run length
+#   optimizer.learning_rate: 0.0003    default is 0.0018; 3e-4 is the rate the
+#                                      README recommends at these batch sizes
+experiment_settings:
+  mode: train
+  output_dir: /home/etowah/projects/openfold3-finetune/example/single_structure_ft/train_output
+  restart_checkpoint_path: /home/etowah/projects/openfold3/weights/of3-p2-155k.pt
+  ckpt_load_settings:
+    manual_checkpoint_loading: true
+    init_from_ema_weights: false
+    restore_lr_scheduler: false
+    restore_time_step: false
+    strict_loading: false
+
+data_module_args:
+  batch_size: 1
+  num_workers: 0
+  epoch_len: 10
+
+logging_config:
+  log_lr: true
+  wandb_config:
+    project: openfold3-finetune
+    experiment_name: single-structure-ft-fp32-ema0.9-lr3e-4
+    offline: false
+
+pl_trainer_args:
+  devices: 1
+  num_nodes: 1
+  precision: 32-true
+  max_epochs: -1
+  max_steps: 100
+  num_sanity_val_steps: 0
+  log_every_n_steps: 1
+
+checkpoint_config:
+  every_n_epochs: 1
+  auto_insert_metric_name: false
+  save_last: true
+  save_top_k: 0
+
+model_update:
+  presets:
+    - train
+  custom:
+    architecture:
+      shared:
+        use_confidence_emb_prob: 0.8
+        diffusion:
+          use_conditioning_prob: 0.8
+    settings:
+      blocks_per_ckpt: 1
+      ema:
+        decay: 0.9
+      lr_scheduler:
+        warmup_no_steps: 100
+      optimizer:
+        learning_rate: 0.0003
+
+dataset_configs:
+  train:
+    weighted-pdb:
+      dataset_class: WeightedPDBDataset
+      weight: 1.0
+      config:
+        debug_mode: true
+        template:
+          n_templates: 4
+        crop:
+          token_crop:
+            enabled: true
+            token_budget: 384
+            crop_weights:
+              contiguous: 0.2
+              spatial: 0.4
+              spatial_interface: 0.4
+          chain_crop:
+            enabled: true
+
+  validation:
+    val-weighted-pdb:
+      dataset_class: ValidationPDBDataset
+      config:
+        debug_mode: true
+        msa:
+          subsample_main: false
+        template:
+          n_templates: 4
+        crop:
+          token_crop:
+            enabled: false
+
+dataset_paths:
+  weighted-pdb:
+    alignments_directory: none
+    alignment_db_directory: none
+    alignment_array_directory: /home/etowah/projects/openfold3-finetune/example/single_structure_ft/dataset_processed/alignment_arrays
+    dataset_cache_file: /home/etowah/projects/openfold3-finetune/example/single_structure_ft/dataset_processed/caches/train_cache.json
+    target_structures_directory: /home/etowah/projects/openfold3-finetune/example/single_structure_ft/dataset_processed/preprocessed/structure_files
+    target_structure_file_format: npz
+    reference_molecule_directory: /home/etowah/projects/openfold3-finetune/example/single_structure_ft/dataset_processed/preprocessed/reference_mols
+    template_cache_directory: none
+    template_structure_array_directory: none
+    template_structures_directory: none
+    template_file_format: null
+    ccd_file: null
+
+  val-weighted-pdb:
+    alignments_directory: none
+    alignment_db_directory: none
+    alignment_array_directory: /home/etowah/projects/openfold3-finetune/example/single_structure_ft/dataset_processed/alignment_arrays
+    dataset_cache_file: /home/etowah/projects/openfold3-finetune/example/single_structure_ft/dataset_processed/caches/val_cache.json
+    target_structures_directory: /home/etowah/projects/openfold3-finetune/example/single_structure_ft/dataset_processed/preprocessed/structure_files
+    target_structure_file_format: npz
+    reference_molecule_directory: /home/etowah/projects/openfold3-finetune/example/single_structure_ft/dataset_processed/preprocessed/reference_mols
+    template_cache_directory: none
+    template_structure_array_directory: none
+    template_structures_directory: none
+    template_file_format: null
+    ccd_file: null
