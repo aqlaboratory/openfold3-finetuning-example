@@ -1,12 +1,8 @@
 # OpenFold3 finetuning example 
 
-When using a cofolding model in a drug discovery campaign, the model should ideally reflect the
-most up-to-date structural information available for the target — structures recently deposited in
-the PDB, or experimental structures generated as the campaign progresses.
+Example of finetuning OpenFold3 on custom dataset, structures from the [OpenBind data release](https://zenodo.org/records/22142262) (79 fragment-bound structures of the EV-A71 2A protease). 
 
-This repo contains the data-preparation pipeline and training configs used to fine-tune OpenFold3
-on the first [OpenBind data release](https://zenodo.org/records/22142262) (79 fragment-bound
-structures of the EV-A71 2A protease). Fine-tuning on those fragment structures improved pose
+Fine-tuning on those fragment structures improved pose
 prediction and virtual-screening discrimination on related follow-on compounds, and works best
 when the binding mode is conserved between the fragment and the follow-on compound.
 
@@ -94,30 +90,6 @@ git checkout v0.5.0
 
 pip install -e .   # re-install after switching, the package version is pinned at install time
 ```
-
-Those constraints are upstream's own, from `OPENFOLD_MODEL_CHECKPOINT_REGISTRY` in
-`openfold3/entry_points/parameters.py` and `docs/source/parameters_reference.md` at `v0.5.0`.
-Note the registry caps p2 at `<0.4.4dev0` while that doc table says `<0.5`; the registry is what
-the code enforces, so `0.4.0`–`0.4.3` is the safe range for p2.
-
-You cannot mix them. The two checkpoints are different architectures. p2 carries a per-block
-`diffusion_transformer.blocks.N.attention_pair_bias.layer_norm_z` — 24 blocks, mirrored under
-`sample_diffusion.`, so 48 parameters that openbind does not have (4,935 parameters in total).
-openbind instead has one shared `diffusion_transformer.layer_norm_z` per copy (4,890). The openbind
-checkpoint
-also carries `version_tensor = [2, 0, 0]`, matching `MODEL_VERSION` at `v0.5.0`, whereas `0.4.0`
-through `0.4.5` declare `[1, 0, 0]`. Loading the wrong pair fails with missing and unexpected
-state-dict keys rather than silently misbehaving.
-
-A legacy `openfold3-p1` (`of3_ft3_v1.pt`, `<0.4`) also exists but is deprecated upstream.
-
-Everything in this repo was run and verified against tag `0.4.3` with `of3-p2-155k.pt`. The
-preprocessing runners call into the OpenFold3 source tree, so if you switch to `v0.5.0` for
-openbind, re-check the data preparation steps as well as training.
-
-The example expects `$OPENFOLD_REPO_ROOT/weights/of3-p2-155k.pt`; override with
-`CHECKPOINT=/path/to/weights.pt` or by editing `restart_checkpoint_path` in your runner yaml.
-Running `setup_openfold` downloads the default checkpoint for whichever version is checked out.
 
 ## Quick start: the single-structure example
 
@@ -321,17 +293,6 @@ of data, and to fall as GPU kernels improve.
 
 Training produces a new OpenFold3 checkpoint that runs through the same inference pipeline as the
 base model.
-
-## What this means in practice
-
-For this target, a small set of fragment-bound structures improved pose prediction and
-virtual-screening discrimination on related follow-on compounds — and the fine-tuning could be done
-on a single desktop GPU. A cofolding model does not have to stay fixed during a campaign: as new
-structures are generated, they can be trained on and used to improve the next round of predictions.
-
-We are still working out when fine-tuning helps. We expect it to help for some targets more than
-others, and for some test entries more than others. We hope the workflow here is a useful starting
-point for fine-tuning on your own data.
 
 ## Notes
 
