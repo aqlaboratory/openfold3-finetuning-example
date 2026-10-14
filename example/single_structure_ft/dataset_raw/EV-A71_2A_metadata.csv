@@ -1,0 +1,3 @@
+complex_name,compound_group,smiles,experimental_pKD,covalent,fragment_screen,pb_valid_prepared,pb_valid_ref,suspected_artefact,sucos_shape,pocket_qcov,sucos_shape_pocket_qcov
+A71EV2A-x0812a,x0812a,Cn1nc(C(N)=O)c2ccccc21,,False,True,True,True,False,48.9619,91.6667,44.8817
+A71EV2A-x2351a,x2351a,Cn1nc(C(N)=O)c2cc(F)ccc21,5.0507,False,False,True,False,False,45.6079,92,41.9593

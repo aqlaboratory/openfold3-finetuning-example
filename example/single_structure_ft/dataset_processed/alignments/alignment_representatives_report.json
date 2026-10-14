@@ -1,0 +1,14 @@
+{
+  "chain_count": 2,
+  "representative_count": 1,
+  "representatives": [
+    {
+      "representative_id": "a71ev2a-x0812a_1",
+      "sequence_length": 140,
+      "member_ids": [
+        "a71ev2a-x0812a_1",
+        "a71ev2a-x2351a_1"
+      ]
+    }
+  ]
+}

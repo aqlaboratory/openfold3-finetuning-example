@@ -1,0 +1,16 @@
+input_dir=/home/etowah/projects/openfold3-finetune/example/single_structure_ft/dataset_processed/merged_cifs
+output_dir=/home/etowah/projects/openfold3-finetune/example/single_structure_ft/dataset_processed/merged_cifs_monomer
+processed_ok=2
+processed_failed=0
+
+file=a71ev2a-x0812a.cif
+selected_protein_chain=1
+main_ligand_chain=2
+removed_protein_chains=-
+kept_hetero_residues=A71EV2A-X0812A_1:2:1:-
+
+file=a71ev2a-x2351a.cif
+selected_protein_chain=1
+main_ligand_chain=2
+removed_protein_chains=-
+kept_hetero_residues=A71EV2A-X2351A_1:2:1:-

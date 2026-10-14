@@ -1,0 +1,6 @@
+[WARNING - cif:parse_mmcif - pid:2630052 - PDB:a71ev2a-x0812a]: No bioassembly information found in the CIF file, falling back to parsing the asymmetric unit.
+[INFO - structure:preprocess_structure_and_write_outputs_of3 - pid:2630052 - PDB:a71ev2a-x0812a]: Processing structure with 2 chains.
+[INFO - structure:preprocess_structure_and_write_outputs_of3 - pid:2630052 - PDB:a71ev2a-x0812a]: label_asym_id to new chain_id mapping: {np.str_('1'): np.str_('1'), np.str_('2'): np.str_('2')}
+[WARNING - cif:parse_mmcif - pid:2630052 - PDB:a71ev2a-x2351a]: No bioassembly information found in the CIF file, falling back to parsing the asymmetric unit.
+[INFO - structure:preprocess_structure_and_write_outputs_of3 - pid:2630052 - PDB:a71ev2a-x2351a]: Processing structure with 2 chains.
+[INFO - structure:preprocess_structure_and_write_outputs_of3 - pid:2630052 - PDB:a71ev2a-x2351a]: label_asym_id to new chain_id mapping: {np.str_('1'): np.str_('1'), np.str_('2'): np.str_('2')}

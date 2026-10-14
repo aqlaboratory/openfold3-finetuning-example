@@ -1,0 +1,18 @@
+{
+  "input_dir": "/home/etowah/projects/openfold3-finetune/example/single_structure_ft/dataset_processed/input_structures",
+  "output_dir": "/home/etowah/projects/openfold3-finetune/example/single_structure_ft/dataset_processed/merged_cifs",
+  "report_dir": "/home/etowah/projects/openfold3-finetune/example/single_structure_ft/dataset_processed/merged_cifs/merge_reports",
+  "sample_count": 2,
+  "success_count": 2,
+  "failure_count": 0,
+  "aggregate_counts": {
+    "added": 2,
+    "promoted_components": 2
+  },
+  "augmented_ccd_path": "/home/etowah/projects/openfold3-finetune/example/single_structure_ft/dataset_processed/merged_cifs/reference_data/components_harmonized.cif",
+  "synthetic_component_ids": [
+    "A71EV2A-x0812a_1",
+    "A71EV2A-x2351a_1"
+  ],
+  "failed_sample_ids": []
+}

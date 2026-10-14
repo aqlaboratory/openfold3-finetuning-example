@@ -1,0 +1,46 @@
+{
+  "counts": {
+    "added": 1,
+    "promoted_components": 1
+  },
+  "added": [
+    {
+      "sdf_path": "/home/etowah/projects/openfold3-finetune/example/single_structure_ft/dataset_processed/input_structures/A71EV2A-x2351a/A71EV2A-x2351a_ligand.sdf",
+      "source_hint": null,
+      "action": "add",
+      "source_res_name": "LIG",
+      "component_id": "A71EV2A-x2351a_1",
+      "component_kind": "synthetic",
+      "component_validation_flags": [],
+      "assigned_residue": {
+        "chain_id": "F",
+        "res_id": 1,
+        "ins_code": "",
+        "res_name": "A71EV2A-x2351a_1"
+      }
+    }
+  ],
+  "records": [
+    {
+      "sdf_path": "/home/etowah/projects/openfold3-finetune/example/single_structure_ft/dataset_processed/input_structures/A71EV2A-x2351a/A71EV2A-x2351a_ligand.sdf",
+      "source_hint": null,
+      "action": "add",
+      "source_res_name": "LIG",
+      "component_id": "A71EV2A-x2351a_1",
+      "component_kind": "synthetic",
+      "component_validation_flags": [],
+      "assigned_residue": {
+        "chain_id": "F",
+        "res_id": 1,
+        "ins_code": "",
+        "res_name": "A71EV2A-x2351a_1"
+      }
+    }
+  ],
+  "synthetic_component_ids": [
+    "A71EV2A-x2351a_1"
+  ],
+  "output_cif_path": "/home/etowah/projects/openfold3-finetune/example/single_structure_ft/dataset_processed/merged_cifs/a71ev2a-x2351a.cif",
+  "sample_id": "A71EV2A-x2351a",
+  "sample_dir": "/home/etowah/projects/openfold3-finetune/example/single_structure_ft/dataset_processed/input_structures/A71EV2A-x2351a"
+}

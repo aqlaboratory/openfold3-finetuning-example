@@ -1,0 +1,166 @@
+{
+  "structure_data": {
+    "a71ev2a-x0812a": {
+      "release_date": "2024-01-16",
+      "status": "success",
+      "resolution": 1.491,
+      "experimental_method": "UNKNOWN",
+      "token_count": 153,
+      "chains": {
+        "1": {
+          "label_asym_id": "1",
+          "auth_asym_id": "1",
+          "entity_id": 1,
+          "molecule_type": "PROTEIN"
+        },
+        "2": {
+          "label_asym_id": "2",
+          "auth_asym_id": "2",
+          "entity_id": 2,
+          "molecule_type": "LIGAND",
+          "reference_mol_id": "A71EV2A-x0812a_1"
+        }
+      },
+      "interfaces": [
+        [
+          "1",
+          "2"
+        ]
+      ]
+    }
+  },
+  "reference_molecule_data": {
+    "A71EV2A-x0812a_1": {
+      "residue_count": 1,
+      "conformer_gen_strategy": "default",
+      "fallback_conformer_pdb_id": null,
+      "canonical_smiles": "CN1[N][C](C(N)=O)[C]2CCCC[C]21"
+    },
+    "VAL": {
+      "residue_count": 1,
+      "conformer_gen_strategy": "default",
+      "fallback_conformer_pdb_id": null,
+      "canonical_smiles": "CC(C)[C@H](N)C(=O)O"
+    },
+    "GLU": {
+      "residue_count": 1,
+      "conformer_gen_strategy": "default",
+      "fallback_conformer_pdb_id": null,
+      "canonical_smiles": "N[C@@H](CCC(=O)O)C(=O)O"
+    },
+    "ALA": {
+      "residue_count": 1,
+      "conformer_gen_strategy": "default",
+      "fallback_conformer_pdb_id": null,
+      "canonical_smiles": "C[C@H](N)C(=O)O"
+    },
+    "GLY": {
+      "residue_count": 1,
+      "conformer_gen_strategy": "default",
+      "fallback_conformer_pdb_id": null,
+      "canonical_smiles": "NCC(=O)O"
+    },
+    "CYS": {
+      "residue_count": 1,
+      "conformer_gen_strategy": "default",
+      "fallback_conformer_pdb_id": null,
+      "canonical_smiles": "N[C@@H](CS)C(=O)O"
+    },
+    "MET": {
+      "residue_count": 1,
+      "conformer_gen_strategy": "default",
+      "fallback_conformer_pdb_id": null,
+      "canonical_smiles": "CSCC[C@H](N)C(=O)O"
+    },
+    "ASP": {
+      "residue_count": 1,
+      "conformer_gen_strategy": "default",
+      "fallback_conformer_pdb_id": null,
+      "canonical_smiles": "N[C@@H](CC(=O)O)C(=O)O"
+    },
+    "PRO": {
+      "residue_count": 1,
+      "conformer_gen_strategy": "default",
+      "fallback_conformer_pdb_id": null,
+      "canonical_smiles": "O=C(O)[C@@H]1CCCN1"
+    },
+    "PHE": {
+      "residue_count": 1,
+      "conformer_gen_strategy": "default",
+      "fallback_conformer_pdb_id": null,
+      "canonical_smiles": "N[C@@H](Cc1ccccc1)C(=O)O"
+    },
+    "ILE": {
+      "residue_count": 1,
+      "conformer_gen_strategy": "default",
+      "fallback_conformer_pdb_id": null,
+      "canonical_smiles": "CC[C@H](C)[C@H](N)C(=O)O"
+    },
+    "TRP": {
+      "residue_count": 1,
+      "conformer_gen_strategy": "default",
+      "fallback_conformer_pdb_id": null,
+      "canonical_smiles": "N[C@@H](Cc1c[nH]c2ccccc12)C(=O)O"
+    },
+    "ARG": {
+      "residue_count": 1,
+      "conformer_gen_strategy": "default",
+      "fallback_conformer_pdb_id": null,
+      "canonical_smiles": "NC(=[NH2+])NCCC[C@H](N)C(=O)O"
+    },
+    "TYR": {
+      "residue_count": 1,
+      "conformer_gen_strategy": "default",
+      "fallback_conformer_pdb_id": null,
+      "canonical_smiles": "N[C@@H](Cc1ccc(O)cc1)C(=O)O"
+    },
+    "THR": {
+      "residue_count": 1,
+      "conformer_gen_strategy": "default",
+      "fallback_conformer_pdb_id": null,
+      "canonical_smiles": "C[C@@H](O)[C@H](N)C(=O)O"
+    },
+    "ASN": {
+      "residue_count": 1,
+      "conformer_gen_strategy": "default",
+      "fallback_conformer_pdb_id": null,
+      "canonical_smiles": "NC(=O)C[C@H](N)C(=O)O"
+    },
+    "GLN": {
+      "residue_count": 1,
+      "conformer_gen_strategy": "default",
+      "fallback_conformer_pdb_id": null,
+      "canonical_smiles": "NC(=O)CC[C@H](N)C(=O)O"
+    },
+    "HIS": {
+      "residue_count": 1,
+      "conformer_gen_strategy": "default",
+      "fallback_conformer_pdb_id": null,
+      "canonical_smiles": "N[C@@H](Cc1c[nH]c[nH+]1)C(=O)O"
+    },
+    "LEU": {
+      "residue_count": 1,
+      "conformer_gen_strategy": "default",
+      "fallback_conformer_pdb_id": null,
+      "canonical_smiles": "CC(C)C[C@H](N)C(=O)O"
+    },
+    "LYS": {
+      "residue_count": 1,
+      "conformer_gen_strategy": "default",
+      "fallback_conformer_pdb_id": null,
+      "canonical_smiles": "N[C@@H](CCCC[NH3+])C(=O)O"
+    },
+    "SER": {
+      "residue_count": 1,
+      "conformer_gen_strategy": "default",
+      "fallback_conformer_pdb_id": null,
+      "canonical_smiles": "N[C@@H](CO)C(=O)O"
+    },
+    "A71EV2A-x2351a_1": {
+      "residue_count": 1,
+      "conformer_gen_strategy": "default",
+      "fallback_conformer_pdb_id": null,
+      "canonical_smiles": "CN1[N][C](C(N)=O)[C]2C[C](F)CC[C]21"
+    }
+  }
+}
