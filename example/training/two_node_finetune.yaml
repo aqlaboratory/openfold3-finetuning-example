@@ -1,8 +1,14 @@
+# Paths below are placeholders. Replace before use:
+#   <DATASET_DIR>      prepared dataset root: the --output_dir of runners/prepare_*_data.py
+#                      (contains alignment_arrays/, caches/, preprocessed/, merged_cifs/)
+#   <OUTPUT_DIR>       where checkpoints and logs are written
+#   <CHECKPOINT_PATH>  base model weights to fine-tune from
+#   <TEMPLATE_ARRAY_DIR>  any existing directory; required but unused here
 experiment_settings:
   mode: train
-  output_dir: /scratch/s5h/etowah.s5h/projects/openfold3-internal/output
+  output_dir: <OUTPUT_DIR>
   seed: 1272025
-  restart_checkpoint_path: /scratch/s5h/etowah.s5h/projects/openfold3-internal/weights/235-155000.ckpt
+  restart_checkpoint_path: <CHECKPOINT_PATH>
   preemption_safe_resume: false
   ckpt_load_settings:
     manual_checkpoint_loading: true
@@ -50,7 +56,7 @@ model_update:
       model_selection_weight_scheme: fine_tuning
       clear_cache_between_steps: true
       ema:
-        decay: 0.98
+        decay: 0.90
       optimizer:
         learning_rate: 0.0003
       lr_scheduler:
@@ -112,27 +118,27 @@ dataset_paths:
   weighted-pdb:
     alignments_directory: none
     alignment_db_directory: none
-    alignment_array_directory: /scratch/s5h/etowah.s5h/projects/openfold3-internal/datasets/a71ev2a/finetune_dataset_2026-04-27-new-pipeline/alignment_arrays
-    dataset_cache_file: /scratch/s5h/etowah.s5h/projects/openfold3-internal/datasets/a71ev2a/finetune_dataset_2026-04-27-new-pipeline/caches/train_cache.json
-    target_structures_directory: /scratch/s5h/etowah.s5h/projects/openfold3-internal/datasets/a71ev2a/finetune_dataset_2026-04-27-new-pipeline/preprocessed/structure_files
+    alignment_array_directory: <DATASET_DIR>/alignment_arrays
+    dataset_cache_file: <DATASET_DIR>/caches/train_cache.json
+    target_structures_directory: <DATASET_DIR>/preprocessed/structure_files
     target_structure_file_format: npz
-    reference_molecule_directory: /scratch/s5h/etowah.s5h/projects/openfold3-internal/datasets/a71ev2a/finetune_dataset_2026-04-27-new-pipeline/preprocessed/reference_mols
+    reference_molecule_directory: <DATASET_DIR>/preprocessed/reference_mols
     template_cache_directory: none
-    template_structure_array_directory: /scratch/s5h/etowah.s5h/projects/openfold3-internal/examples/finetuning_2/dataset_generation/template_structure_arrays_placeholder
+    template_structure_array_directory: <TEMPLATE_ARRAY_DIR>
     template_structures_directory: none
     template_file_format: npz
-    ccd_file: /scratch/s5h/etowah.s5h/projects/openfold3-internal/datasets/a71ev2a/finetune_dataset_2026-04-27-new-pipeline/merged_cifs/reference_data/components_harmonized.cif
+    ccd_file: <DATASET_DIR>/merged_cifs/reference_data/components_harmonized.cif
 
   val-weighted-pdb:
     alignments_directory: none
     alignment_db_directory: none
-    alignment_array_directory: /scratch/s5h/etowah.s5h/projects/openfold3-internal/datasets/a71ev2a/finetune_dataset_2026-04-27-new-pipeline/alignment_arrays
-    dataset_cache_file: /scratch/s5h/etowah.s5h/projects/openfold3-internal/datasets/a71ev2a/finetune_dataset_2026-04-27-new-pipeline/caches/val_cache.json
-    target_structures_directory: /scratch/s5h/etowah.s5h/projects/openfold3-internal/datasets/a71ev2a/finetune_dataset_2026-04-27-new-pipeline/preprocessed/structure_files
+    alignment_array_directory: <DATASET_DIR>/alignment_arrays
+    dataset_cache_file: <DATASET_DIR>/caches/val_cache.json
+    target_structures_directory: <DATASET_DIR>/preprocessed/structure_files
     target_structure_file_format: npz
-    reference_molecule_directory: /scratch/s5h/etowah.s5h/projects/openfold3-internal/datasets/a71ev2a/finetune_dataset_2026-04-27-new-pipeline/preprocessed/reference_mols
+    reference_molecule_directory: <DATASET_DIR>/preprocessed/reference_mols
     template_cache_directory: none
-    template_structure_array_directory: /scratch/s5h/etowah.s5h/projects/openfold3-internal/examples/finetuning_2/dataset_generation/template_structure_arrays_placeholder
+    template_structure_array_directory: <TEMPLATE_ARRAY_DIR>
     template_structures_directory: none
     template_file_format: npz
-    ccd_file: /scratch/s5h/etowah.s5h/projects/openfold3-internal/datasets/a71ev2a/finetune_dataset_2026-04-27-new-pipeline/merged_cifs/reference_data/components_harmonized.cif
+    ccd_file: <DATASET_DIR>/merged_cifs/reference_data/components_harmonized.cif

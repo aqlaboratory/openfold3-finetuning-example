@@ -1,7 +1,12 @@
+# Paths below are placeholders. Replace before use:
+#   <DATASET_DIR>      prepared dataset root: the --output_dir of runners/prepare_*_data.py
+#                      (contains alignment_arrays/, caches/, preprocessed/, merged_cifs/)
+#   <OUTPUT_DIR>       where checkpoints and logs are written
+#   <CHECKPOINT_PATH>  base model weights to fine-tune from
 experiment_settings:
   mode: train
-  output_dir: /home/etowah/projects/openfold3-finetune/train_run_acc8
-  restart_checkpoint_path: /home/etowah/projects/openfold3/weights/of3-p2-155k.pt
+  output_dir: <OUTPUT_DIR>
+  restart_checkpoint_path: <CHECKPOINT_PATH>
   ckpt_load_settings:
     manual_checkpoint_loading: true
     init_from_ema_weights: false
@@ -10,7 +15,7 @@ experiment_settings:
     strict_loading: false
 data_module_args:
   batch_size: 1
-  num_workers: 0
+  num_workers: 1
   epoch_len: 800
 logging_config:
   log_lr: false
@@ -18,7 +23,7 @@ logging_config:
 pl_trainer_args:
   devices: 1
   num_nodes: 1
-  precision: bf16-mixed
+  precision: 32-true
   max_epochs: -1
   log_every_n_steps: 1
   max_steps: 8000
@@ -42,6 +47,8 @@ model_update:
         train:
           use_deepspeed_evo_attention: true
       blocks_per_ckpt: 1
+      ema:
+        decay: 0.9
       manual_optimization:
         accumulate_grad_batches: 8
 dataset_configs:
@@ -79,11 +86,11 @@ dataset_paths:
   weighted-pdb:
     alignments_directory: none
     alignment_db_directory: none
-    alignment_array_directory: /home/etowah/projects/openfold3-finetune/a71ev2a/alignment_arrays
-    dataset_cache_file: /home/etowah/projects/openfold3-finetune/a71ev2a/caches/train_cache.json
-    target_structures_directory: /home/etowah/projects/openfold3-finetune/a71ev2a/preprocessed/structure_files
+    alignment_array_directory: <DATASET_DIR>/alignment_arrays
+    dataset_cache_file: <DATASET_DIR>/caches/train_cache.json
+    target_structures_directory: <DATASET_DIR>/preprocessed/structure_files
     target_structure_file_format: npz
-    reference_molecule_directory: /home/etowah/projects/openfold3-finetune/a71ev2a/preprocessed/reference_mols
+    reference_molecule_directory: <DATASET_DIR>/preprocessed/reference_mols
     template_cache_directory: none
     template_structure_array_directory: none
     template_structures_directory: none
@@ -92,11 +99,11 @@ dataset_paths:
   val-weighted-pdb:
     alignments_directory: none
     alignment_db_directory: none
-    alignment_array_directory: /home/etowah/projects/openfold3-finetune/a71ev2a/alignment_arrays
-    dataset_cache_file: /home/etowah/projects/openfold3-finetune/a71ev2a/caches/val_cache_8.json
-    target_structures_directory: /home/etowah/projects/openfold3-finetune/a71ev2a/preprocessed/structure_files
+    alignment_array_directory: <DATASET_DIR>/alignment_arrays
+    dataset_cache_file: <DATASET_DIR>/caches/val_cache_8.json
+    target_structures_directory: <DATASET_DIR>/preprocessed/structure_files
     target_structure_file_format: npz
-    reference_molecule_directory: /home/etowah/projects/openfold3-finetune/a71ev2a/preprocessed/reference_mols
+    reference_molecule_directory: <DATASET_DIR>/preprocessed/reference_mols
     template_cache_directory: none
     template_structure_array_directory: none
     template_structures_directory: none
