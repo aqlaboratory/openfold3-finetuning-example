@@ -158,32 +158,41 @@ def _bond_order_and_aromatic(bond_type_id: int) -> tuple[str, str]:
         return "TRIP", "N"
     if bond_type == BondType.QUADRUPLE:
         return "QUAD", "N"
-    if bond_type in (
-        BondType.AROMATIC,
-        BondType.AROMATIC_SINGLE,
-        BondType.AROMATIC_DOUBLE,
-        BondType.AROMATIC_TRIPLE,
-    ):
+    if bond_type == BondType.AROMATIC_SINGLE:
+        return "SING", "Y"
+    if bond_type == BondType.AROMATIC_DOUBLE:
+        return "DOUB", "Y"
+    if bond_type == BondType.AROMATIC_TRIPLE:
+        return "TRIP", "Y"
+    if bond_type == BondType.AROMATIC:
+        # Aromatic without a Kekule order; nothing better to write.
         return "SING", "Y"
     return "SING", "N"
 
 
 def _rdkit_bond_order_and_aromatic(bond) -> tuple[str, str]:
+    """value_order and pdbx_aromatic_flag for a bond, following the PDB CCD, which
+    writes an aromatic ring as alternating DOUB/SING with the flag set to Y.
+
+    The molecule must be kekulized first: an un-kekulized aromatic bond reports
+    BondType.AROMATIC with no Kekule order to recover, and consumers that read
+    value_order rather than the flag (biotite, and so OpenFold3) then see an
+    all-single ring whose carbons come out as radicals.
+    """
     from rdkit import Chem
 
-    if bond.GetIsAromatic():
-        return "SING", "Y"
+    aromatic_flag = "Y" if bond.GetIsAromatic() else "N"
 
     bond_type = bond.GetBondType()
     if bond_type == Chem.BondType.SINGLE:
-        return "SING", "N"
+        return "SING", aromatic_flag
     if bond_type == Chem.BondType.DOUBLE:
-        return "DOUB", "N"
+        return "DOUB", aromatic_flag
     if bond_type == Chem.BondType.TRIPLE:
-        return "TRIP", "N"
+        return "TRIP", aromatic_flag
     if bond_type == Chem.BondType.QUADRUPLE:
-        return "QUAD", "N"
-    return "SING", "N"
+        return "QUAD", aromatic_flag
+    return "SING", aromatic_flag
 
 
 def _connected_component_count(
@@ -275,6 +284,13 @@ def _add_explicit_hydrogens(component: SyntheticComponent) -> SyntheticComponent
         rdkit_mol = Chem.AddHs(rdkit_mol, addCoords=True)
     except Exception:
         return component
+
+    # SanitizeMol perceives aromaticity, replacing the input Kekule orders with
+    # BondType.AROMATIC. Recover them before the bond export below.
+    try:
+        Chem.Kekulize(rdkit_mol, clearAromaticFlags=False)
+    except Exception:
+        pass
 
     conf = rdkit_mol.GetConformer()
     expanded_names = list(component.atom_names)
