@@ -25,6 +25,7 @@ Everything runs on anything from an 8-GPU node down to a single desktop GPU.
 | `runners/` | Entry points. One command per pipeline stage. |
 | `src/` | The individual preprocessing steps the runners call. |
 | `example/single_structure_ft/` | End-to-end example: train on one structure, validate on a close analog. Includes raw and fully processed data. |
+| `example/EV712a/` | The full 925-complex OpenBind EV-A71 2A dataset: a prep script plus the 79/64 train and validation id lists. |
 | `example/training/` | Training configs for a 2-node run and for a single GPU with gradient accumulation. |
 
 ## Setup
@@ -107,6 +108,13 @@ Download and unzip the [release](https://zenodo.org/records/22142262), then:
 python runners/prepare_zenodo_data.py \
   --input_dir dataset/OpenBind_EV-A71_2A \
   --output_dir <dataset_dir>
+```
+
+To run this and the cache step below in one go, using the same train/validation
+split as the write-up:
+
+```bash
+ZENODO_DIR=/path/to/OpenBind_EV-A71_2A ./example/EV712a/run_ev_a71_2a_prep.sh
 ```
 
 Two steps here are specific to novel chemical matter and do not appear in typical PDB processing:
