@@ -17,6 +17,14 @@
 #   VAL_EVERY           run validation every N steps      (default: 10)
 #   SKIP_PREP=1         reuse an existing dataset_processed/
 #   SKIP_TRAIN=1        only prepare the data
+#
+# Metrics go to Weights & Biases by default (run `wandb login` first):
+#   WANDB=0             disable wandb and train without a logger
+#   WANDB_PROJECT       project                           (default: openfold3-finetune)
+#   WANDB_NAME          run name                          (default: single-structure-ft)
+#   WANDB_ENTITY        team/user                         (default: your wandb default)
+#   WANDB_GROUP         run group                         (default: unset)
+#   WANDB_OFFLINE=true  log locally, sync later
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -62,6 +70,29 @@ fi
   --openfold_repo "$OPENFOLD_REPO_ROOT"
 
 # 3. Runner yaml. With a single training structure, epoch_len sets how often validation runs.
+# Assemble logging_config separately so optional wandb keys can be left out entirely
+# rather than emitted as nulls.
+if [[ "${WANDB:-1}" == 1 ]]; then
+  LOGGING_CONFIG="logging_config:
+  log_lr: true
+  wandb_config:
+    project: ${WANDB_PROJECT:-openfold3-finetune}
+    experiment_name: ${WANDB_NAME:-single-structure-ft}
+    offline: ${WANDB_OFFLINE:-false}"
+  if [[ -n "${WANDB_ENTITY:-}" ]]; then
+    LOGGING_CONFIG="$LOGGING_CONFIG
+    entity: $WANDB_ENTITY"
+  fi
+  if [[ -n "${WANDB_GROUP:-}" ]]; then
+    LOGGING_CONFIG="$LOGGING_CONFIG
+    group: $WANDB_GROUP"
+  fi
+else
+  LOGGING_CONFIG="logging_config:
+  log_lr: false
+  wandb_config: null"
+fi
+
 mkdir -p "$TRAIN_OUTPUT_DIR"
 cat > "$RUNNER_YAML" <<EOF
 experiment_settings:
@@ -80,9 +111,7 @@ data_module_args:
   num_workers: 0
   epoch_len: $VAL_EVERY
 
-logging_config:
-  log_lr: false
-  wandb_config: null
+$LOGGING_CONFIG
 
 pl_trainer_args:
   devices: 1
