@@ -1,4 +1,4 @@
-# Fine-tuning OpenFold3 on new structural data
+# OpenFold3 finetuning example 
 
 When using a cofolding model in a drug discovery campaign, the model should ideally reflect the
 most up-to-date structural information available for the target — structures recently deposited in
